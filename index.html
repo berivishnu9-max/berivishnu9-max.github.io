@@ -1,0 +1,1507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GlobalTech Connect — Employee Portal</title>
+  <meta name="description" content="GlobalTech's accessible employee portal. Designed and audited against WCAG 2.2 AA success criteria.">
+  <link rel="stylesheet" href="styles.css?v=2.1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&family=Lexend:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Premium Loading Splash Screen -->
+  <div id="splash-screen" class="splash-screen" role="dialog" aria-modal="true" aria-label="Loading GlobalTech Connect">
+    <div class="splash-container">
+      <svg class="splash-logo animate-pulse-logo" xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg>
+      <h1 class="splash-title">GlobalTech Connect</h1>
+      <p class="splash-subtitle">Next-Generation Accessible Workspace</p>
+      <div class="splash-loader-bar">
+        <div class="splash-loader-progress" id="splash-loader-progress"></div>
+      </div>
+      <div class="splash-status" id="splash-status" aria-live="polite">Initializing secure connection...</div>
+    </div>
+  </div>
+
+  <!-- Skip Navigation Link -->
+  <a href="#main-content" class="skip-link">Skip to Main Content</a>
+
+  <!-- Reading Ruler Element -->
+  <div id="reading-ruler" class="reading-ruler" aria-hidden="true"></div>
+
+  <!-- Reading Mask Elements -->
+  <div id="reading-mask-top" class="reading-mask-panel" aria-hidden="true"></div>
+  <div id="reading-mask-bottom" class="reading-mask-panel" aria-hidden="true"></div>
+
+  <!-- Focus Frame Ring Backdrop (ADHD Focus mode) -->
+  <div id="focus-frame-overlay" class="focus-frame-overlay hidden" aria-hidden="true"></div>
+
+  <!-- App Wrapper -->
+  <div class="app-layout">
+
+    <!-- Global Header -->
+    <header class="global-header" role="banner">
+      <div class="header-left">
+        <button id="sidebar-toggle" class="icon-btn" aria-label="Toggle Sidebar Navigation" aria-expanded="true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg>
+          <span class="btn-text text-label">Menu</span>
+        </button>
+        <div class="brand-logo" aria-label="GlobalTech Home">
+          <svg class="logo-icon animate-pulse-logo" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg>
+          <span class="brand-text">GlobalTech <span class="accent-text">Connect</span></span>
+        </div>
+      </div>
+
+      <div class="header-center">
+        <!-- Global Search -->
+        <div class="search-container">
+          <label for="global-search" class="sr-only">Search Platform</label>
+          <div class="search-input-wrapper">
+            <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+            <input type="text" id="global-search" class="search-input" placeholder="Search pages, people, articles…" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="search-results">
+            <kbd class="search-kbd-hint" aria-hidden="true">/</kbd>
+          </div>
+          <!-- Search Dropdown Results -->
+          <div id="search-results" class="search-results-dropdown hidden" role="listbox" aria-label="Search results"></div>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <!-- Voice Control Active Microphone Indicator -->
+        <div id="voice-indicator" class="voice-mic-indicator hidden" aria-live="polite">
+          <span class="pulse-ring"></span>
+          <span class="mic-dot"></span>
+          <span class="voice-text">Voice Command Mode Active</span>
+        </div>
+
+        <!-- Accessibility Hub Toggle Button -->
+        <button id="accessibility-toolbar-btn" class="toolbar-toggle-btn" aria-label="Open the Accessibility Hub" aria-expanded="false" aria-controls="accessibility-toolbar">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-accessibility"><circle cx="16" cy="4" r="1"></circle><path d="m18 19 1-7-6 1"></path><path d="m5 8 3-3 5.5 3-3.5 7h5"></path><path d="M4 19h4.5l1-7H6"></path></svg>
+          <span class="btn-text">Accessibility Hub</span>
+        </button>
+
+        <!-- Notifications Indicator -->
+        <div class="notification-wrapper">
+          <button id="notification-btn" class="icon-btn" aria-label="View notifications. 3 unread messages." aria-expanded="false" aria-controls="notification-panel">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bell"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg>
+            <span class="notification-count" id="notification-badge" aria-hidden="true">3</span>
+            <span class="btn-text text-label">Alerts</span>
+          </button>
+          
+          <!-- Notifications Panel -->
+          <div id="notification-panel" class="notification-panel hidden" role="dialog" aria-modal="false" aria-label="Notifications Drawer">
+            <div class="panel-header">
+              <h3>Notifications</h3>
+              <button id="mark-all-read" class="text-link-btn">Mark all read</button>
+            </div>
+            <ul class="notification-list" role="list">
+              <li class="notification-item unread urgent" role="listitem">
+                <span class="status-indicator" aria-hidden="true"></span>
+                <div class="notification-content">
+                  <div class="notification-meta">
+                    <span class="badge badge-urgent">System Announcement</span>
+                    <span class="time">Just now</span>
+                  </div>
+                  <p class="notification-text"><strong>System Maintenance:</strong> GlobalTech Employee portal will be offline this Saturday 1am - 3am EST.</p>
+                </div>
+              </li>
+              <li class="notification-item unread" role="listitem">
+                <span class="status-indicator" aria-hidden="true"></span>
+                <div class="notification-content">
+                  <div class="notification-meta">
+                    <span class="badge badge-info">IT Support</span>
+                    <span class="time">2 hours ago</span>
+                  </div>
+                  <p class="notification-text">Your ticket <strong>#GT-8841</strong> (Laptop keyboard issue) has been updated: Assigned to hardware tech.</p>
+                </div>
+              </li>
+              <li class="notification-item unread" role="listitem">
+                <span class="status-indicator" aria-hidden="true"></span>
+                <div class="notification-content">
+                  <div class="notification-meta">
+                    <span class="badge badge-warning">L&D</span>
+                    <span class="time">1 day ago</span>
+                  </div>
+                  <p class="notification-text">Reminder: Your annual <strong>GlobalTech Code of Conduct</strong> course is due in 3 days.</p>
+                </div>
+              </li>
+            </ul>
+            <div class="panel-footer">
+              <button id="view-all-notifications" class="secondary-btn w-full">View all notifications</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- User Profile Dropdown -->
+        <div class="profile-wrapper">
+          <button id="profile-btn" class="profile-btn" aria-label="User Profile Options: Vishnu" aria-expanded="false" aria-controls="profile-menu">
+            <span class="avatar-initials avatar-sm avatar-hue-1" aria-hidden="true">V</span>
+            <div class="profile-info-text">
+              <span class="profile-name">Vishnu</span>
+              <span class="profile-role">Business Analyst</span>
+            </div>
+            <svg class="chevron-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg>
+          </button>
+          <div id="profile-menu" class="profile-menu-dropdown hidden" role="menu" aria-label="Profile navigation menu">
+            <button role="menuitem" class="profile-menu-item" data-target="profile-tab">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              My Profile
+            </button>
+            <button role="menuitem" class="profile-menu-item" id="profile-accessibility-btn">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-accessibility"><circle cx="16" cy="4" r="1"></circle><path d="m18 19 1-7-6 1"></path><path d="m5 8 3-3 5.5 3-3.5 7h5"></path><path d="M4 19h4.5l1-7H6"></path></svg>
+              Accessibility Settings
+            </button>
+            <button role="menuitem" class="profile-menu-item" data-target="help-tab">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" x2="12.01" y1="17" y2="17"></line></svg>
+              Help & Support
+            </button>
+            <div class="menu-divider" role="separator"></div>
+            <button role="menuitem" class="profile-menu-item logout-item">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" x2="9" y1="12" y2="12"></line></svg>
+              Logout
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Side Menu & Main Area layout -->
+    <div class="main-shell">
+      
+      <!-- Accessibility Settings Drawer (fully open, scrollable) -->
+      <aside id="accessibility-toolbar" class="accessibility-toolbar" aria-hidden="true" role="region" aria-label="Accessibility Customization Panel">
+        <div class="toolbar-header">
+          <h2>Accessibility Hub</h2>
+          <button id="close-toolbar" class="icon-btn" aria-label="Close Accessibility Toolbar">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" x2="6" y1="6" y2="18"></line><line x1="6" x2="18" y1="6" y2="18"></line></svg>
+          </button>
+        </div>
+        
+        <div class="toolbar-content">
+          <div class="preset-info">
+            <p><strong>Personalise your workspace.</strong> Adjust how GlobalTech Connect looks, reads, and sounds. Changes apply instantly and are saved to your profile.</p>
+          </div>
+          
+          <!-- Typography & Scale -->
+          <div class="acc-section">
+            <h4>Typography &amp; Scale</h4>
+            <div class="toolbar-group">
+              <div class="group-header">
+                <label for="font-size-slider">Font Size Scaling</label>
+                <span id="font-size-value">100%</span>
+              </div>
+              <input type="range" id="font-size-slider" min="100" max="200" step="10" value="100" aria-valuemin="100" aria-valuemax="200" aria-valuenow="100" aria-valuetext="100 percent">
+              <div class="slider-ticks" aria-hidden="true">
+                <span>100%</span>
+                <span>150%</span>
+                <span>200%</span>
+              </div>
+            </div>
+
+            <!-- Line Height -->
+            <div class="toolbar-group">
+              <div class="group-header">
+                <label for="line-spacing-slider">Paragraph Line Spacing</label>
+                <span id="line-spacing-value">Normal</span>
+              </div>
+              <input type="range" id="line-spacing-slider" min="14" max="22" step="2" value="15" aria-valuemin="14" aria-valuemax="22" aria-valuenow="15" aria-valuetext="1.5 times spacing">
+            </div>
+
+            <!-- Letter Spacing -->
+            <div class="toolbar-group">
+              <div class="group-header">
+                <label for="letter-spacing-slider">Character Letter Spacing</label>
+                <span id="letter-spacing-value">Normal</span>
+              </div>
+              <input type="range" id="letter-spacing-slider" min="0" max="30" step="5" value="0" aria-valuemin="0" aria-valuemax="30" aria-valuenow="0" aria-valuetext="0 relative letter spacing">
+            </div>
+
+            <!-- Word Spacing -->
+            <div class="toolbar-group">
+              <div class="group-header">
+                <label for="word-spacing-slider">Word Spacing Width</label>
+                <span id="word-spacing-value">Normal</span>
+              </div>
+              <input type="range" id="word-spacing-slider" min="0" max="50" step="10" value="0" aria-valuemin="0" aria-valuemax="50" aria-valuenow="0" aria-valuetext="Normal word spacing">
+            </div>
+
+            <!-- Text Alignment Selector -->
+            <div class="toolbar-group">
+              <label for="text-align-select" class="bold-label">Text Alignment</label>
+              <select id="text-align-select">
+                <option value="inherit" selected>Default (Align Left)</option>
+                <option value="justify">Justified Layout</option>
+                <option value="center">Centered Text</option>
+              </select>
+            </div>
+
+            <!-- Dyslexia Font -->
+            <div class="toolbar-group flex-row">
+              <div class="toggle-text">
+                <label for="dyslexia-font-toggle" class="bold-label">Dyslexia font (Lexend)</label>
+                <p class="toggle-sub">Optimized character weights for readability</p>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="dyslexia-font-toggle">
+                <span class="slider round"></span>
+              </label>
+            </div>
+
+            <!-- Monospace Font Override -->
+            <div class="toolbar-group flex-row">
+              <div class="toggle-text">
+                <label for="monospace-toggle" class="bold-label">Monospace Text Override</label>
+                <p class="toggle-sub">Forces clean code-like monospace text font</p>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="monospace-toggle">
+                <span class="slider round"></span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Colors & High Contrast Shaders -->
+          <div class="acc-section">
+            <h4>Colors &amp; Contrast Shaders</h4>
+            <!-- Preset Theme selection -->
+            <fieldset class="toolbar-group">
+              <legend>Color Preset Themes</legend>
+              <div class="theme-options">
+                <label class="theme-radio-label">
+                  <input type="radio" name="app-theme" value="light" checked>
+                  <span class="radio-custom light-theme-preview"></span>
+                  <span class="radio-text">Light Mode</span>
+                </label>
+                <label class="theme-radio-label">
+                  <input type="radio" name="app-theme" value="dark">
+                  <span class="radio-custom dark-theme-preview"></span>
+                  <span class="radio-text">Dark Mode</span>
+                </label>
+                <label class="theme-radio-label">
+                  <input type="radio" name="app-theme" value="contrast">
+                  <span class="radio-custom contrast-theme-preview"></span>
+                  <span class="radio-text">High Contrast</span>
+                </label>
+              </div>
+            </fieldset>
+
+            <!-- Color blind simulator dropdown -->
+            <div class="toolbar-group">
+              <label for="colorblind-select" class="bold-label">Color-Blindness Shader</label>
+              <p class="field-sub">Simulates on-screen layout using SVG matrix color shifts</p>
+              <select id="colorblind-select">
+                <option value="none" selected>None (Standard Colors)</option>
+                <option value="protanopia">Protanopia (Red Color Blindness)</option>
+                <option value="deuteranopia">Deuteranopia (Green Color Blindness)</option>
+                <option value="tritanopia">Tritanopia (Blue Color Blindness)</option>
+                <option value="grayscale">Achromatopsia (Total Color Blindness)</option>
+                <option value="inverted">Inverted Contrast Mode</option>
+              </select>
+            </div>
+
+            <!-- General CSS filters adjusters -->
+            <div class="toolbar-group">
+              <div class="group-header">
+                <label for="contrast-filter-slider">Contrast Intensity</label>
+                <span id="contrast-filter-value">100%</span>
+              </div>
+              <input type="range" id="contrast-filter-slider" min="60" max="180" step="20" value="100" aria-valuenow="100">
+            </div>
+
+            <div class="toolbar-group">
+              <div class="group-header">
+                <label for="saturation-filter-slider">Color Saturation</label>
+                <span id="saturation-filter-value">100%</span>
+              </div>
+              <input type="range" id="saturation-filter-slider" min="0" max="200" step="20" value="100" aria-valuenow="100">
+            </div>
+          </div>
+
+          <!-- Voice Synthesizer & TTS Readers -->
+          <div class="acc-section">
+            <h4>Screen Reader &amp; Text-to-Speech</h4>
+            <!-- TTS Toggle -->
+            <div class="toolbar-group flex-row">
+              <div class="toggle-text">
+                <label for="tts-reader-toggle" class="bold-label">Built-in Voice Reader (TTS)</label>
+                <p class="toggle-sub">Read focused/hovered items using voice synthesis</p>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="tts-reader-toggle">
+                <span class="slider round"></span>
+              </label>
+            </div>
+
+            <!-- TTS Voice Select options -->
+            <div class="toolbar-group" id="tts-voice-group" style="display: none; padding-left: 10px; border-left: 2px solid var(--border-color);">
+              <label for="tts-voice-select" class="bold-label">System Voice Profile</label>
+              <select id="tts-voice-select"></select>
+
+              <div class="group-header" style="margin-top: 10px;">
+                <label for="tts-speed-slider">Speech Reading Speed</label>
+                <span id="tts-speed-value">1.0x</span>
+              </div>
+              <input type="range" id="tts-speed-slider" min="0.5" max="2.0" step="0.25" value="1.0">
+            </div>
+
+            <!-- Visual ARIA Debugger output console -->
+            <div class="toolbar-group flex-row">
+              <div class="toggle-text">
+                <label for="sr-console-toggle" class="bold-label">Visual ARIA Output Console</label>
+                <p class="toggle-sub">Shows raw screen-reader announcement outputs visually</p>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="sr-console-toggle">
+                <span class="slider round"></span>
+              </label>
+            </div>
+
+            <!-- Virtual tactile Braille simulator bar -->
+            <div class="toolbar-group flex-row">
+              <div class="toggle-text">
+                <label for="braille-simulator-toggle" class="bold-label">Tactile Braille Console</label>
+                <p class="toggle-sub">Simulates Braille character dot layouts of focused text</p>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="braille-simulator-toggle">
+                <span class="slider round"></span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Motor Control & Speech Commands -->
+          <div class="acc-section">
+            <h4>Motor Controls &amp; Speech Commands</h4>
+            <!-- Speech command controls (Web speech api) -->
+            <div class="toolbar-group flex-row">
+              <div class="toggle-text">
+                <label for="speech-command-toggle" class="bold-label">Voice Control Microphone</label>
+                <p class="toggle-sub">Say commands like "Go to HR" or "Open Support" to navigate</p>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="speech-command-toggle">
+                <span class="slider round"></span>
+              </label>
+            </div>
+            <div class="speech-hints-box" id="speech-hints-box" style="display: none; padding: 10px; border-left: 2px solid var(--border-color); font-size: 0.8rem; background: var(--bg-tertiary); border-radius: var(--border-radius-sm);">
+              <strong>Voice commands list:</strong> "dashboard", "hr portal", "learning", "support", "news", "directory", "knowledge base", "help centre", "profile".
+            </div>
+
+            <!-- Focus Guide Outline settings -->
+            <div class="toolbar-group">
+              <label for="focus-ring-select" class="bold-label">Keyboard Focus Rings</label>
+              <p class="field-sub">Choose visibility outline settings for keyboard navigation</p>
+              <select id="focus-ring-select">
+                <option value="default" selected>Standard Highlight (Indigo)</option>
+                <option value="thick-yellow">Thick Yellow Outline</option>
+                <option value="thick-cyan">Thick Cyan Outline</option>
+                <option value="thick-red">Thick Red Outline</option>
+              </select>
+            </div>
+
+            <!-- Large targets padding multiplier -->
+            <div class="toolbar-group flex-row">
+              <div class="toggle-text">
+                <label for="large-targets-toggle" class="bold-label">Expand Click Targets</label>
+                <p class="toggle-sub">Enlarges primary card actions and navigation items</p>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="large-targets-toggle">
+                <span class="slider round"></span>
+              </label>
+            </div>
+
+            <!-- Cursor style scale -->
+            <div class="toolbar-group flex-row">
+              <div class="toggle-text">
+                <label for="large-cursor-toggle" class="bold-label">Large Contrast Cursor</label>
+                <p class="toggle-sub">Replaces pointer with a high-contrast crosshair</p>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="large-cursor-toggle">
+                <span class="slider round"></span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Focus Helpers & Cognitive Guides -->
+          <div class="acc-section">
+            <h4>Focus Guides &amp; Cognitive Aids</h4>
+            <!-- Reading Ruler -->
+            <div class="toolbar-group flex-row">
+              <div class="toggle-text">
+                <label for="reading-ruler-toggle" class="bold-label">Reading Ruler overlay</label>
+                <p class="toggle-sub">Follows cursor vertically to guide line reading</p>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="reading-ruler-toggle">
+                <span class="slider round"></span>
+              </label>
+            </div>
+
+            <!-- Reading Mask -->
+            <div class="toolbar-group flex-row">
+              <div class="toggle-text">
+                <label for="reading-mask-toggle" class="bold-label">Reading Mask shading</label>
+                <p class="toggle-sub">Dim screen except for active readable lines focus</p>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="reading-mask-toggle">
+                <span class="slider round"></span>
+              </label>
+            </div>
+
+            <!-- Focus Frame overlay (ADHD mode) -->
+            <div class="toolbar-group flex-row">
+              <div class="toggle-text">
+                <label for="focus-frame-toggle" class="bold-label">ADHD Focus Frame</label>
+                <p class="toggle-sub">Blur and dim the interface except for focused elements</p>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="focus-frame-toggle">
+                <span class="slider round"></span>
+              </label>
+            </div>
+
+            <!-- Reduced motion toggle -->
+            <div class="toolbar-group flex-row">
+              <div class="toggle-text">
+                <label for="reduced-motion-toggle" class="bold-label">Reduced Motion (No Animations)</label>
+                <p class="toggle-sub">Freezes core site layout transitions and animations</p>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="reduced-motion-toggle">
+                <span class="slider round"></span>
+              </label>
+            </div>
+
+            <!-- Text labels icons toggler -->
+            <div class="toolbar-group flex-row">
+              <div class="toggle-text">
+                <label for="icon-labels-toggle" class="bold-label">Forced Button Text Labels</label>
+                <p class="toggle-sub">Shows visible text descriptions alongside icon controls</p>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="icon-labels-toggle">
+                <span class="slider round"></span>
+              </label>
+            </div>
+
+            <!-- Sound visuals -->
+            <div class="toolbar-group flex-row">
+              <div class="toggle-text">
+                <label for="audio-cue-toggle" class="bold-label">Sound Visual Equivalents</label>
+                <p class="toggle-sub">Subtitles and text alert flashes for audible chimes</p>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="audio-cue-toggle">
+                <span class="slider round"></span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Language & Translation -->
+          <div class="acc-section">
+            <h4>Language / Localization</h4>
+            <div class="toolbar-group">
+              <label for="language-select" class="bold-label">Portal Language</label>
+              <div class="field-sub">Translate page content dynamically</div>
+              <select id="language-select" aria-label="Select Portal Language">
+                <option value="en">English (US)</option>
+                <option value="es">Español (Spanish)</option>
+                <option value="fr">Français (French)</option>
+                <option value="de">Deutsch (German)</option>
+                <option value="it">Italiano (Italian)</option>
+                <option value="pt">Português (Portuguese)</option>
+                <option value="ja">日本語 (Japanese)</option>
+                <option value="zh">简体中文 (Chinese)</option>
+                <option value="hi">हिन्दी (Hindi)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Key Board Shortcuts List -->
+          <div class="shortcuts-list">
+            <h3>Keyboard Shortcuts</h3>
+            <ul role="list">
+              <li><kbd>Tab</kbd> Navigate between elements</li>
+              <li><kbd>Space</kbd> / <kbd>Enter</kbd> Select / trigger button</li>
+              <li><kbd>Esc</kbd> Close current drawer, modal or search</li>
+              <li><kbd class="shortcut-modifier">Alt</kbd> + <kbd>A</kbd> Toggle accessibility drawer</li>
+              <li><kbd class="shortcut-modifier">Alt</kbd> + <kbd>1</kbd> Go to Employee Dashboard</li>
+              <li><kbd class="shortcut-modifier">Alt</kbd> + <kbd>2</kbd> Go to HR Portal</li>
+              <li><kbd class="shortcut-modifier">Alt</kbd> + <kbd>3</kbd> Go to Learning & Development</li>
+              <li><kbd class="shortcut-modifier">Alt</kbd> + <kbd>4</kbd> Go to Technology Support</li>
+              <li><kbd>/</kbd> Focus global search</li>
+            </ul>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Sidebar Navigation Menu -->
+      <nav class="sidebar-nav" role="navigation" aria-label="Main Navigation">
+        <ul class="nav-list" role="list">
+          <li>
+            <button class="nav-item active" data-target="dashboard-tab" aria-current="page">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-layout-dashboard"><rect width="7" height="9" x="3" y="3" rx="1"></rect><rect width="7" height="5" x="14" y="3" rx="1"></rect><rect width="7" height="9" x="14" y="10" rx="1"></rect><rect width="7" height="5" x="3" y="14" rx="1"></rect></svg>
+              <span class="nav-label">Dashboard</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-item" data-target="hr-tab">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users-round"><path d="M18 21a6 6 0 0 0-12 0"></path><circle cx="12" cy="10" r="4"></circle><path d="M12 2v2"></path></svg>
+              <span class="nav-label">HR Portal</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-item" data-target="learning-tab">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-graduation-cap"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"></path><path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"></path></svg>
+              <span class="nav-label">Learning &amp; Development</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-item" data-target="support-tab">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-wrench"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
+              <span class="nav-label">Technology Support</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-item" data-target="news-tab">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-newspaper"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"></path><path d="M18 14h-8"></path><path d="M15 18h-5"></path><path d="M10 6h8v4h-8V6Z"></path></svg>
+              <span class="nav-label">Company News</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-item" data-target="directory-tab">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-contact"><path d="M16 2v2"></path><path d="M7 22v-3a2.25 2.25 0 0 1 2.25-2.25h5.5A2.25 2.25 0 0 1 17 19v3"></path><path d="M8 2v2"></path><circle cx="12" cy="11" r="3"></circle><rect x="3" y="4" width="18" height="18" rx="2"></rect></svg>
+              <span class="nav-label">Employee Directory</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-item" data-target="kb-tab">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-open-text"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path><path d="M6 8h2"></path><path d="M6 12h2"></path><path d="M16 8h2"></path><path d="M16 12h2"></path></svg>
+              <span class="nav-label">Knowledge Base</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-item" data-target="help-tab">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-info"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>
+              <span class="nav-label">Help Centre</span>
+            </button>
+          </li>
+        </ul>
+        <div class="sidebar-footer">
+          <p class="footer-system-text">&copy; 2026 GlobalTech Connect</p>
+          <a href="#accessibility-toolbar" id="footer-accessibility-trigger" class="accessibility-link">Compliance: WCAG 2.2 AA</a>
+        </div>
+      </nav>
+
+      <!-- Main Layout Body -->
+      <main id="main-content" class="main-content" tabindex="-1" role="main">
+        
+        <!-- Breadcrumb Navigation -->
+        <nav aria-label="Breadcrumb" class="breadcrumb-container">
+          <ol class="breadcrumbs">
+            <li><button class="breadcrumb-link" data-target="dashboard-tab">Home</button></li>
+            <li class="separator" aria-hidden="true">/</li>
+            <li class="active-crumb"><span id="current-breadcrumb">Dashboard</span></li>
+          </ol>
+        </nav>
+
+        <!-- Live Region for Screen Readers -->
+        <div id="screen-reader-live" class="sr-only" aria-live="polite">Welcome to GlobalTech Connect employee platform.</div>
+
+        <!-- Visual Audio Equivalents Alert Banner -->
+        <div id="visual-audio-alert" class="visual-audio-alert hidden" role="status" aria-live="assertive"></div>
+
+        <!-- ==================== MODULE: DASHBOARD ==================== -->
+        <section id="dashboard-tab" class="tab-panel active" role="region" aria-label="Employee Dashboard">
+          <div class="welcome-banner">
+            <div class="banner-overlay"></div>
+            <div class="banner-content">
+              <h1>Welcome back, Vishnu</h1>
+              <p>You have <strong>3</strong> training courses pending and <strong>1</strong> active tech support ticket.</p>
+              <div class="banner-actions">
+                <button class="primary-btn-overlay" data-target="learning-tab">Resume Training</button>
+                <button class="secondary-btn-overlay" data-target="support-tab">Check Ticket Status</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="dashboard-grid">
+            <!-- Training Progress Card -->
+            <div class="dashboard-card training-summary-card">
+              <div class="card-header">
+                <h2>Learning &amp; Development</h2>
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="card-icon"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"></path><path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"></path></svg>
+              </div>
+              <div class="card-body">
+                <p class="card-desc">Your mandatory training completion rate for this quarter.</p>
+                <!-- Accessible SVG Chart -->
+                <div class="chart-container">
+                  <svg width="100%" height="160" viewBox="0 0 200 160" role="img" aria-label="Bar chart showing training progress: Mandatory courses 2 completed out of 3, Optional courses 4 completed out of 5.">
+                    <rect x="30" y="20" width="40" height="100" fill="var(--chart-bg-track)" rx="4" />
+                    <rect x="30" y="53.3" width="40" height="66.7" fill="var(--chart-bar-primary)" rx="4" />
+                    
+                    <rect x="110" y="20" width="40" height="100" fill="var(--chart-bg-track)" rx="4" />
+                    <rect x="110" y="40" width="40" height="80" fill="var(--chart-bar-secondary)" rx="4" />
+                    
+                    <text x="50" y="140" class="chart-text" text-anchor="middle">Mandatory</text>
+                    <text x="130" y="140" class="chart-text" text-anchor="middle">Recommended</text>
+                    
+                    <text x="50" y="75" class="chart-val" text-anchor="middle" fill="#ffffff">67%</text>
+                    <text x="130" y="65" class="chart-val" text-anchor="middle" fill="#ffffff">80%</text>
+                  </svg>
+                </div>
+                <div class="progress-details">
+                  <div class="details-row">
+                    <span class="label"><span class="dot primary"></span> Mandatory Code of Conduct</span>
+                    <span class="value badge badge-urgent">Due in 3 days</span>
+                  </div>
+                  <div class="details-row">
+                    <span class="label"><span class="dot secondary"></span> Customer Service Excellence</span>
+                    <span class="value badge badge-info">Recommended</span>
+                  </div>
+                </div>
+              </div>
+              <div class="card-footer">
+                <button class="text-link-btn" data-target="learning-tab">Open Training Portal <span aria-hidden="true">&rarr;</span></button>
+              </div>
+            </div>
+
+            <!-- IT Support Ticket Summary -->
+            <div class="dashboard-card tech-summary-card">
+              <div class="card-header">
+                <h2>IT Support Services</h2>
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="card-icon"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
+              </div>
+              <div class="card-body">
+                <p class="card-desc">Status of your active IT service requests.</p>
+                <div class="active-tickets-list">
+                  <div class="ticket-status-row">
+                    <div class="ticket-info">
+                      <span class="ticket-number">GT-8841</span>
+                      <span class="ticket-title">Keyboard key stuck on corporate Mac</span>
+                    </div>
+                    <div class="ticket-badge-group">
+                      <span class="badge badge-info"><span class="badge-dot info"></span> In Progress</span>
+                      <span class="badge badge-medium-priority"><span class="badge-dot medium"></span> Priority: Medium</span>
+                    </div>
+                  </div>
+                  <div class="ticket-update-log">
+                    <p class="log-title">Latest Update (2 hours ago):</p>
+                    <p class="log-content">"Hardware technician has been assigned. Please drop off the device at Hub 4, Room 102."</p>
+                  </div>
+                </div>
+              </div>
+              <div class="card-footer">
+                <div class="footer-buttons">
+                  <button class="primary-btn btn-sm" data-target="support-tab">Request Support</button>
+                  <button class="secondary-btn btn-sm" data-target="support-tab">View All Tickets</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Company Announcements Widget -->
+            <div class="dashboard-card news-summary-card">
+              <div class="card-header">
+                <h2>Important News</h2>
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="card-icon"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"></path><path d="M18 14h-8"></path><path d="M15 18h-5"></path><path d="M10 6h8v4h-8V6Z"></path></svg>
+              </div>
+              <div class="card-body">
+                <ul class="simple-news-list" role="list">
+                  <li role="listitem">
+                    <div class="news-meta">
+                      <span class="badge badge-urgent"><svg class="badge-icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><line x1="12" x2="12" y1="9" y2="13"></line><line x1="12" x2="12.01" y1="17" y2="17"></line></svg> Urgent Announcement</span>
+                      <span class="news-date">July 7, 2026</span>
+                    </div>
+                    <a href="#" class="news-link-item" data-news-id="1">New Global IT Security Policy is now active. Action required: Agree to terms.</a>
+                  </li>
+                  <li role="listitem">
+                    <div class="news-meta">
+                      <span class="badge badge-general">Office Operations</span>
+                      <span class="news-date">July 5, 2026</span>
+                    </div>
+                    <a href="#" class="news-link-item" data-news-id="2">New Singapore regional office official opening dates and transfer rules.</a>
+                  </li>
+                </ul>
+              </div>
+              <div class="card-footer">
+                <button class="text-link-btn" data-target="news-tab">See All News <span aria-hidden="true">&rarr;</span></button>
+              </div>
+            </div>
+
+            <!-- Quick Links / Actions -->
+            <div class="dashboard-card quick-links-card">
+              <div class="card-header">
+                <h2>Quick Actions</h2>
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="card-icon"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+              </div>
+              <div class="card-body">
+                <p class="card-desc">Direct shortcuts to critical HR and support systems.</p>
+                <div class="shortcuts-grid">
+                  <button class="shortcut-btn" data-target="hr-tab" data-sub="leave">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar-days"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect><line x1="16" x2="16" y1="2" y2="6"></line><line x1="8" x2="8" y1="2" y2="6"></line><line x1="3" x2="21" y1="10" y2="10"></line><path d="M8 14h.01"></path><path d="M12 14h.01"></path><path d="M16 14h.01"></path><path d="M8 18h.01"></path><path d="M12 18h.01"></path><path d="M16 18h.01"></path></svg>
+                    <span>Request Leave</span>
+                  </button>
+                  <button class="shortcut-btn" data-target="hr-tab" data-sub="benefits">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-heart-handshake"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path><path d="M12 5 9.04 7.96a2.17 2.17 0 0 0 0 3.08v0c.82.82 2.13.85 3 .07l2.07-1.9"></path><path d="m14 10 2.07 1.9c.87.8 2.18.77 3-.07v0a2.17 2.17 0 0 0 0-3.08L16.2 6"></path></svg>
+                    <span>My Benefits</span>
+                  </button>
+                  <button class="shortcut-btn" data-target="directory-tab">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-code"><path d="m21 21-6-6"></path><circle cx="10" cy="10" r="7"></circle><path d="m8 8-2 2 2 2"></path><path d="m12 12 2-2-2-2"></path></svg>
+                    <span>Find Employees</span>
+                  </button>
+                  <button class="shortcut-btn" data-target="kb-tab">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-square-text"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path><path d="M13 8H7"></path><path d="M17 12H7"></path></svg>
+                    <span>Knowledge Base</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== MODULE: HR PORTAL ==================== -->
+        <section id="hr-tab" class="tab-panel" role="region" aria-label="HR Self-Service Portal">
+          <div class="section-title-area">
+            <h1>HR Self-Service Portal</h1>
+            <p class="section-subtitle">Manage your personal profile details, corporate benefits, and request time off.</p>
+          </div>
+
+          <div class="hr-container">
+            <div class="tabs-subnav" role="tablist" aria-label="HR Options">
+              <button id="hr-subtab-leave" class="subtab-item active" role="tab" aria-selected="true" aria-controls="hr-panel-leave">Time Off Requests</button>
+              <button id="hr-subtab-benefits" class="subtab-item" role="tab" aria-selected="false" aria-controls="hr-panel-benefits">My Benefits (Enrollment)</button>
+            </div>
+
+            <!-- Sub-Panel: Leave Requests -->
+            <div id="hr-panel-leave" class="subtab-content active" role="tabpanel" aria-labelledby="hr-subtab-leave">
+              <div class="grid-2col">
+                <!-- Leave Request Form -->
+                <div class="form-card">
+                  <h3>Submit a Leave Request</h3>
+                  <p class="form-instructions">Complete all required fields below. Your request will be automatically routed to your manager.</p>
+                  
+                  <!-- Accessible Form Validation Summary -->
+                  <div id="leave-error-summary" class="error-summary hidden" role="alert" aria-labelledby="leave-err-heading" tabindex="-1">
+                    <h4 id="leave-err-heading">Please correct the following errors:</h4>
+                    <ul id="leave-errors-list"></ul>
+                  </div>
+
+                  <form id="leave-form" novalidate>
+                    <div class="form-field">
+                      <label for="leave-type" class="bold-label">Leave Type <span class="required" aria-hidden="true">*</span></label>
+                      <select id="leave-type" name="leave-type" required aria-required="true">
+                        <option value="">-- Select Type --</option>
+                        <option value="annual">Annual Paid Leave</option>
+                        <option value="sick">Sick Leave</option>
+                        <option value="compassionate">Compassionate Leave</option>
+                        <option value="study">Study/Training Leave</option>
+                        <option value="unpaid">Unpaid Personal Leave</option>
+                      </select>
+                      <span class="field-error-msg" id="leave-type-error"></span>
+                    </div>
+
+                    <div class="form-row-2col">
+                      <div class="form-field">
+                        <label for="leave-start" class="bold-label">Start Date <span class="required" aria-hidden="true">*</span></label>
+                        <input type="date" id="leave-start" name="leave-start" required aria-required="true">
+                        <span class="field-error-msg" id="leave-start-error"></span>
+                      </div>
+                      <div class="form-field">
+                        <label for="leave-end" class="bold-label">End Date <span class="required" aria-hidden="true">*</span></label>
+                        <input type="date" id="leave-end" name="leave-end" required aria-required="true">
+                        <span class="field-error-msg" id="leave-end-error"></span>
+                      </div>
+                    </div>
+
+                    <div class="form-field">
+                      <label for="leave-reason" class="bold-label">Reason for Request <span class="sr-only">(Optional)</span></label>
+                      <textarea id="leave-reason" name="leave-reason" rows="3" placeholder="Provide additional details if needed for Sick/Compassionate leave..."></textarea>
+                    </div>
+
+                    <div class="form-actions">
+                      <button type="submit" class="primary-btn">Submit Request</button>
+                      <button type="reset" class="secondary-btn">Reset Form</button>
+                    </div>
+                  </form>
+                </div>
+
+                <!-- Leave Allowances Card -->
+                <div class="allowances-card">
+                  <h3>My Time Off Balances (2026)</h3>
+                  <div class="allowance-item">
+                    <div class="allowance-info">
+                      <span class="allowance-name">Annual Paid Leave</span>
+                      <span class="allowance-val"><strong>18</strong> days remaining</span>
+                    </div>
+                    <div class="progress-bar-track" aria-hidden="true">
+                      <div class="progress-bar-fill primary" style="width: 72%;"></div>
+                    </div>
+                    <p class="sr-only">Annual Paid Leave: 18 days remaining out of 25 days total.</p>
+                  </div>
+
+                  <div class="allowance-item">
+                    <div class="allowance-info">
+                      <span class="allowance-name">Sick Leave</span>
+                      <span class="allowance-val"><strong>9</strong> days remaining</span>
+                    </div>
+                    <div class="progress-bar-track" aria-hidden="true">
+                      <div class="progress-bar-fill success" style="width: 90%;"></div>
+                    </div>
+                    <p class="sr-only">Sick Leave: 9 days remaining out of 10 days total.</p>
+                  </div>
+
+                  <div class="allowance-item">
+                    <div class="allowance-info">
+                      <span class="allowance-name">Study Leave</span>
+                      <span class="allowance-val"><strong>3</strong> days remaining</span>
+                    </div>
+                    <div class="progress-bar-track" aria-hidden="true">
+                      <div class="progress-bar-fill warning" style="width: 60%;"></div>
+                    </div>
+                    <p class="sr-only">Study Leave: 3 days remaining out of 5 days total.</p>
+                  </div>
+
+                  <div class="info-alert-box" role="note">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="info-icon" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>
+                    <div class="info-content">
+                      <p><strong>Manager Approval Needed:</strong> All leave requests take up to 24 hours to review. You will receive an email and system notification once approved.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Sub-Panel: Benefits Enrollment -->
+            <div id="hr-panel-benefits" class="subtab-content hidden" role="tabpanel" aria-labelledby="hr-subtab-benefits">
+              <div class="form-card max-width-card">
+                <h3>Annual Benefits Selection (Open Enrollment)</h3>
+                <p class="form-instructions">Enroll in health insurance plans, pension matching, and dental care options for the 2026 fiscal year.</p>
+                
+                <form id="benefits-form">
+                  <div class="form-field">
+                    <label for="health-plan" class="bold-label">Healthcare Insurance Tier</label>
+                    <select id="health-plan" name="health-plan">
+                      <option value="basic">GlobalTech Core Health (Free, Basic Coverage)</option>
+                      <option value="standard" selected>GlobalTech Silver Premium (+$24/month)</option>
+                      <option value="gold">GlobalTech Gold Platinum (+$58/month, Zero Co-pay)</option>
+                    </select>
+                  </div>
+
+                  <fieldset class="form-fieldset">
+                    <legend class="bold-label">Pension Contribution Matching</legend>
+                    <p class="field-sub">Choose a percentage contribution. GlobalTech matches up to 6% of base salary.</p>
+                    <div class="radio-group-vertical">
+                      <label class="custom-radio-label">
+                        <input type="radio" name="pension-rate" value="0">
+                        <span class="custom-radio"></span>
+                        No contribution (0% matching)
+                      </label>
+                      <label class="custom-radio-label">
+                        <input type="radio" name="pension-rate" value="3">
+                        <span class="custom-radio"></span>
+                        Contribute 3% (3% company match)
+                      </label>
+                      <label class="custom-radio-label">
+                        <input type="radio" name="pension-rate" value="6" checked>
+                        <span class="custom-radio"></span>
+                        Contribute 6% (Maximum 6% company match)
+                      </label>
+                      <label class="custom-radio-label">
+                        <input type="radio" name="pension-rate" value="10">
+                        <span class="custom-radio"></span>
+                        Contribute 10% (6% maximum match limit)
+                      </label>
+                    </div>
+                  </fieldset>
+
+                  <fieldset class="form-fieldset">
+                    <legend class="bold-label">Optional Health &amp; Wellness Add-ons</legend>
+                    <div class="checkbox-group">
+                      <label class="custom-checkbox-label">
+                        <input type="checkbox" name="addons" value="dental" checked>
+                        <span class="custom-checkbox"></span>
+                        Dental Care Package (+$5/month)
+                      </label>
+                      <label class="custom-checkbox-label">
+                        <input type="checkbox" name="addons" value="vision" checked>
+                        <span class="custom-checkbox"></span>
+                        Vision Package (+$5/month - covers 1 frame per year)
+                      </label>
+                      <label class="custom-checkbox-label">
+                        <input type="checkbox" name="addons" value="gym">
+                        <span class="custom-checkbox"></span>
+                        Gym Membership Subsidy (+$15/month - Access to 200+ national gym centers)
+                      </label>
+                    </div>
+                  </fieldset>
+
+                  <div class="form-actions">
+                    <button type="button" id="save-benefits-btn" class="primary-btn">Save Benefits Choices</button>
+                    <button type="button" class="secondary-btn">Cancel Changes</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== MODULE: LEARNING & DEVELOPMENT ==================== -->
+        <section id="learning-tab" class="tab-panel" role="region" aria-label="Learning and Development">
+          <div class="section-title-area">
+            <h1>Learning &amp; Development</h1>
+            <p class="section-subtitle">Complete mandatory compliance training courses and browse upskilling materials.</p>
+          </div>
+
+          <div class="learning-layout">
+            <!-- Training Courses Main Section -->
+            <div class="courses-main">
+              <!-- Mock Video Player Panel -->
+              <div class="player-panel">
+                <div class="player-header">
+                  <div class="player-title">
+                    <span class="badge badge-urgent"><svg class="badge-icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><line x1="12" x2="12" y1="9" y2="13"></line><line x1="12" x2="12.01" y1="17" y2="17"></line></svg> Mandatory Course</span>
+                    <h3>GlobalTech Code of Conduct (Annual compliance)</h3>
+                  </div>
+                  <span id="player-progress-pct" class="player-meta-progress">Progress: 0%</span>
+                </div>
+
+                <!-- Interactive Mock Video Player Area -->
+                <div class="video-player-container" aria-label="Video Player: Code of Conduct module 1" tabindex="0">
+                  <div id="video-frame" class="video-frame">
+                    <!-- Dynamic Captions Overlay container -->
+                    <div id="video-captions-overlay" class="captions-overlay" role="status" aria-live="polite">Video paused. Click Play below to start course.</div>
+                    <!-- Big Play Button Overlay -->
+                    <button id="video-big-play-btn" class="big-play-btn" aria-label="Play video">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="6 3 20 12 6 21 6 3"></polygon></svg>
+                    </button>
+                  </div>
+                  <!-- Custom Video Controls -->
+                  <div class="video-controls-bar">
+                    <button id="video-play-pause-btn" class="controls-btn" aria-label="Play">
+                      <svg id="play-pause-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="6 3 20 12 6 21 6 3"></polygon></svg>
+                    </button>
+                    <!-- Progress Bar Slider -->
+                    <div class="video-scrubber-wrapper">
+                      <label for="video-progress" class="sr-only">Video Time Progress</label>
+                      <input type="range" id="video-progress" class="video-progress-slider" min="0" max="60" value="0" aria-valuemin="0" aria-valuemax="60" aria-valuenow="0" aria-valuetext="0 seconds">
+                      <span id="video-time-display" class="time-display" aria-live="polite">00:00 / 01:00</span>
+                    </div>
+                    <!-- Captions Toggle Button -->
+                    <button id="video-cc-btn" class="controls-btn active" aria-label="Toggle Closed Captions (Currently ON)" aria-pressed="true">
+                      <span>CC</span>
+                    </button>
+                    <!-- Volume / Audio Option -->
+                    <button id="video-volume-btn" class="controls-btn" aria-label="Mute Audio">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5 6 9H2v6h4l5 4V5z"></path><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Interactive Transcript Section -->
+                <div class="transcript-section">
+                  <div class="transcript-header">
+                    <h4>Interactive Audio Transcript</h4>
+                    <a href="#" class="secondary-btn btn-sm" download="Conduct_Course_Transcript.txt">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-icon"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" x2="12" y1="15" y2="3"></line></svg>
+                      Download text transcript
+                    </a>
+                  </div>
+                  <p class="transcript-info">Click any sentence below to skip the video to that exact timestamp.</p>
+                  <div class="transcript-body" id="transcript-body">
+                    <span class="transcript-segment active" role="button" data-time="0" tabindex="0">[00:00] Welcome to the GlobalTech Annual Code of Conduct.</span>
+                    <span class="transcript-segment" role="button" data-time="10" tabindex="0">[00:10] In this training module, we will explore our core ethical principles.</span>
+                    <span class="transcript-segment" role="button" data-time="20" tabindex="0">[00:20] We operate on transparency, inclusion, and accountability to our 400,000 global colleagues.</span>
+                    <span class="transcript-segment" role="button" data-time="30" tabindex="0">[00:30] As employees, we must protect company property, user privacy, and report integrity.</span>
+                    <span class="transcript-segment" role="button" data-time="40" tabindex="0">[00:40] If you observe unethical behavior, report it immediately to the compliance hotline.</span>
+                    <span class="transcript-segment" role="button" data-time="50" tabindex="0">[00:50] Thank you for doing your part to keep GlobalTech a safe, respectful place for everyone.</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Course Content Table & Resources -->
+              <div class="assigned-courses-card">
+                <h3>My Assigned Learning Courses</h3>
+                <div class="table-responsive">
+                  <table class="data-table" aria-label="Assigned courses list">
+                    <thead>
+                      <tr>
+                        <th scope="col">Course Title</th>
+                        <th scope="col">Classification</th>
+                        <th scope="col">Due Date</th>
+                        <th scope="col">Progress</th>
+                        <th scope="col">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr class="active-learning-row">
+                        <td><strong>GlobalTech Code of Conduct (2026)</strong></td>
+                        <td><span class="badge badge-urgent"><svg class="badge-icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><line x1="12" x2="12" y1="9" y2="13"></line><line x1="12" x2="12.01" y1="17" y2="17"></line></svg> Mandatory</span></td>
+                        <td>July 10, 2026</td>
+                        <td>In Progress (0%)</td>
+                        <td><button class="primary-btn btn-sm select-course-btn" data-course="conduct">Resume</button></td>
+                      </tr>
+                      <tr>
+                        <td><strong>Data Security &amp; ISO 27001</strong></td>
+                        <td><span class="badge badge-urgent"><svg class="badge-icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><line x1="12" x2="12" y1="9" y2="13"></line><line x1="12" x2="12.01" y1="17" y2="17"></line></svg> Mandatory</span></td>
+                        <td>August 15, 2026</td>
+                        <td>Not Started</td>
+                        <td><button class="secondary-btn btn-sm select-course-btn" data-course="security">Start Course</button></td>
+                      </tr>
+                      <tr>
+                        <td><strong>Customer Service Excellence</strong></td>
+                        <td><span class="badge badge-info"><span class="badge-dot info"></span> Recommended</span></td>
+                        <td>Dec 31, 2026</td>
+                        <td>Completed</td>
+                        <td><button class="secondary-btn btn-sm select-course-btn" data-course="customer">Review</button></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- Learning Resource Sidebar -->
+            <div class="courses-sidebar">
+              <div class="sidebar-card">
+                <h3>Learning Resources</h3>
+                <p class="card-desc">Download accessible reference guides and study sheets.</p>
+                
+                <ul class="resource-links-list" role="list">
+                  <li role="listitem">
+                    <div class="resource-item-detail">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="doc-icon" aria-hidden="true"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" x2="8" y1="13" y2="13"></line><line x1="16" x2="8" y1="17" y2="17"></line><line x1="10" x2="8" y1="9" y2="9"></line></svg>
+                      <div class="resource-meta">
+                        <a href="#" class="resource-link">Code of Conduct Guide (PDF)</a>
+                        <span class="format-badge">Tagged Accessible PDF</span>
+                      </div>
+                    </div>
+                  </li>
+                  <li role="listitem">
+                    <div class="resource-item-detail">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="doc-icon" aria-hidden="true"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" x2="8" y1="13" y2="13"></line><line x1="16" x2="8" y1="17" y2="17"></line><line x1="10" x2="8" y1="9" y2="9"></line></svg>
+                      <div class="resource-meta">
+                        <a href="#" class="resource-link">ISO 27001 Core Policies (DOCX)</a>
+                        <span class="format-badge">Structured Word Doc</span>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+
+              <div class="sidebar-card">
+                <h3>My Certification Badges</h3>
+                <div class="badges-row">
+                  <div class="cert-badge earned" title="Earned: Inclusive Design Foundations">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="m9 12 2 2 4-4"></path></svg>
+                    <span>Accessibility</span>
+                  </div>
+                  <div class="cert-badge earned" title="Earned: Customer Relations Specialist">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="8" r="7"></circle><path d="M8.21 13.89 7 23l5-3 5 3-1.21-9.12"></path></svg>
+                    <span>Support</span>
+                  </div>
+                  <div class="cert-badge pending" title="Pending: Data Integrity Certified">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                    <span>Security</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== MODULE: TECHNOLOGY SUPPORT ==================== -->
+        <section id="support-tab" class="tab-panel" role="region" aria-label="Technology Support Desk">
+          <div class="section-title-area">
+            <h1>Technology Support Desk</h1>
+            <p class="section-subtitle">Submit troubleshooting tickets for hardware/software issues and track resolution live.</p>
+          </div>
+
+          <div class="support-layout">
+            <div class="grid-2col">
+              <!-- Submit Support Ticket Form -->
+              <div class="form-card">
+                <h3>Submit a Support Ticket</h3>
+                
+                <div id="support-error-summary" class="error-summary hidden" role="alert" aria-labelledby="support-err-heading" tabindex="-1">
+                  <h4 id="support-err-heading">Please correct the following errors:</h4>
+                  <ul id="support-errors-list"></ul>
+                </div>
+
+                <form id="support-form" novalidate>
+                  <div class="form-field">
+                    <label for="support-category" class="bold-label">Category <span class="required" aria-hidden="true">*</span></label>
+                    <select id="support-category" name="support-category" required aria-required="true">
+                      <option value="">-- Select Category --</option>
+                      <option value="hardware">Hardware (Laptops, Screens, Input Devices)</option>
+                      <option value="software">Software &amp; Access (VPN, Email, Slack)</option>
+                      <option value="network">Office Network &amp; Wi-Fi</option>
+                      <option value="security">Security Incident Reporting</option>
+                    </select>
+                    <span class="field-error-msg" id="support-category-error"></span>
+                  </div>
+
+                  <div class="form-field">
+                    <label for="support-priority" class="bold-label">Urgency Priority <span class="required" aria-hidden="true">*</span></label>
+                    <p class="field-sub">Choose Priority. Urgent priority generates automatic manager notification paging.</p>
+                    <select id="support-priority" name="support-priority" required aria-required="true">
+                      <option value="">-- Select Priority --</option>
+                      <option value="low">Low (Standard Request)</option>
+                      <option value="medium">Medium (Impaired Workflow)</option>
+                      <option value="high">High (Blocked Workflow - Laptop Dead)</option>
+                    </select>
+                    <span class="field-error-msg" id="support-priority-error"></span>
+                  </div>
+
+                  <div class="form-field">
+                    <label for="support-title" class="bold-label">Issue Summary <span class="required" aria-hidden="true">*</span></label>
+                    <input type="text" id="support-title" name="support-title" placeholder="Briefly describe the problem (e.g. Keyboard keys stuck)" required aria-required="true">
+                    <span class="field-error-msg" id="support-title-error"></span>
+                  </div>
+
+                  <div class="form-field">
+                    <label for="support-desc" class="bold-label">Full Description <span class="required" aria-hidden="true">*</span></label>
+                    <textarea id="support-desc" name="support-desc" rows="4" placeholder="Detail the symptoms, hardware type, and troubleshooting steps you have already tried..." required aria-required="true"></textarea>
+                    <span class="field-error-msg" id="support-desc-error"></span>
+                  </div>
+
+                  <div class="form-actions">
+                    <button type="submit" class="primary-btn">Submit Ticket</button>
+                    <button type="reset" class="secondary-btn">Reset</button>
+                  </div>
+                </form>
+              </div>
+
+              <!-- Service Status & Help Info -->
+              <div class="support-status-column">
+                <div class="status-summary-card">
+                  <h3>GlobalTech IT Service Status</h3>
+                  <p class="card-desc" id="service-status-summary">Current health check of global infrastructure systems.</p>
+                  
+                  <div class="services-list" role="region" aria-label="Corporate Infrastructure Status List">
+                    <div class="service-row">
+                      <span class="service-name">Corporate Email &amp; SSO</span>
+                      <span class="badge badge-success"><svg class="badge-icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> Normal Operation</span>
+                    </div>
+                    <div class="service-row">
+                      <span class="service-name">Corporate VPN Gateways</span>
+                      <span class="badge badge-warning"><svg class="badge-icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><line x1="12" x2="12" y1="9" y2="13"></line><line x1="12" x2="12.01" y1="17" y2="17"></line></svg> Degraded Performance</span>
+                    </div>
+                    <div class="service-row">
+                      <span class="service-name">Office Networks (Hub 1-6)</span>
+                      <span class="badge badge-success"><svg class="badge-icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> Normal Operation</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="need-urgent-help">
+                  <h3>Need Urgent Desktop Support?</h3>
+                  <p>If you cannot access your account or are locked out, call the 24/7 help desk hotline immediately:</p>
+                  <p class="phone-number"><strong>+1 800 555 0199</strong></p>
+                  <p class="phone-sub">Or email <a href="mailto:support@globaltech.com" class="support-email">support@globaltech.com</a></p>
+                </div>
+              </div>
+            </div>
+
+            <!-- IT Ticket History -->
+            <div class="ticket-history-card">
+              <h3>My Support Ticket History</h3>
+              <p class="card-desc">Click headers to sort table rows. Expand rows to view full message summary details.</p>
+              
+              <div class="table-responsive">
+                <table class="data-table" id="tickets-history-table" aria-label="IT Support Tickets History">
+                  <thead>
+                    <tr>
+                      <th scope="col"><button class="table-sort-btn" id="sort-ticket-id" aria-label="Sort by Ticket ID, ascending">ID</button></th>
+                      <th scope="col"><button class="table-sort-btn" id="sort-ticket-title" aria-label="Sort by Title">Title</button></th>
+                      <th scope="col"><button class="table-sort-btn" id="sort-ticket-category" aria-label="Sort by Category">Category</button></th>
+                      <th scope="col"><button class="table-sort-btn" id="sort-ticket-priority" aria-label="Sort by Priority">Priority</button></th>
+                      <th scope="col"><button class="table-sort-btn" id="sort-ticket-status" aria-label="Sort by Status">Status</button></th>
+                      <th scope="col">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tickets-table-body">
+                    <!-- Dynamic Rows will be inserted here -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== MODULE: COMPANY NEWS ==================== -->
+        <section id="news-tab" class="tab-panel" role="region" aria-label="Company News and Announcements">
+          <div class="section-title-area">
+            <h1>Company News</h1>
+            <p class="section-subtitle">Get the latest announcements and corporate updates from global offices.</p>
+          </div>
+
+          <div class="news-grid" id="news-grid-container">
+            <!-- News items dynamically generated by app.js for strict labels control -->
+          </div>
+        </section>
+
+        <!-- ==================== MODULE: EMPLOYEE DIRECTORY ==================== -->
+        <section id="directory-tab" class="tab-panel" role="region" aria-label="Employee Directory">
+          <div class="section-title-area">
+            <h1>Employee Directory</h1>
+            <p class="section-subtitle">Search and connect with approximately 400,000 GlobalTech colleagues worldwide.</p>
+          </div>
+
+          <div class="directory-container">
+            <!-- Search & Filters -->
+            <div class="directory-filter-bar">
+              <div class="search-field">
+                <label for="dir-search-input" class="sr-only">Search employees by name</label>
+                <input type="text" id="dir-search-input" placeholder="Search by name, title, or email...">
+              </div>
+              <div class="filter-field">
+                <label for="dir-location-filter" class="sr-only">Filter by Location</label>
+                <select id="dir-location-filter">
+                  <option value="">All Locations</option>
+                  <option value="New York">New York</option>
+                  <option value="London">London</option>
+                  <option value="Singapore">Singapore</option>
+                  <option value="Tokyo">Tokyo</option>
+                  <option value="Sydney">Sydney</option>
+                </select>
+              </div>
+              <div class="filter-field">
+                <label for="dir-dept-filter" class="sr-only">Filter by Department</label>
+                <select id="dir-dept-filter">
+                  <option value="">All Departments</option>
+                  <option value="Business Operations">Business Operations</option>
+                  <option value="Engineering">Engineering</option>
+                  <option value="Product">Product</option>
+                  <option value="Human Resources">Human Resources</option>
+                  <option value="Customer Support">Customer Support</option>
+                  <option value="Marketing">Marketing</option>
+                </select>
+              </div>
+              <button id="dir-clear-btn" class="secondary-btn">Clear Filters</button>
+            </div>
+
+            <!-- Employee Grid -->
+            <div class="employee-grid" id="employee-grid-container">
+              <!-- Dynamically rendered cards -->
+            </div>
+
+            <!-- Directory Pagination -->
+            <div class="pagination-container" aria-label="Directory pagination">
+              <button id="dir-prev-btn" class="secondary-btn btn-sm" aria-label="Previous Page">Previous</button>
+              <span id="dir-page-indicator" class="page-indicator" aria-live="polite">Page 1 of 5</span>
+              <button id="dir-next-btn" class="secondary-btn btn-sm" aria-label="Next Page">Next</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== MODULE: KNOWLEDGE BASE ==================== -->
+        <section id="kb-tab" class="tab-panel" role="region" aria-label="Knowledge Base and Support FAQ">
+          <div class="section-title-area">
+            <h1>Knowledge Base &amp; FAQs</h1>
+            <p class="section-subtitle">Find fast answers to common technology, operations, and HR policy questions.</p>
+          </div>
+
+          <div class="kb-layout">
+            <div class="kb-main">
+              <!-- Search bar -->
+              <div class="kb-search-box">
+                <label for="kb-search-input" class="bold-label">Search Articles</label>
+                <div class="kb-input-wrapper">
+                  <input type="text" id="kb-search-input" placeholder="Type keywords e.g. VPN setup, dental benefits...">
+                  <button id="kb-search-btn" class="primary-btn">Search FAQ</button>
+                </div>
+              </div>
+
+              <!-- Accordion Group -->
+              <div class="kb-accordion-card">
+                <h3>Frequently Asked Questions</h3>
+                <div class="accordion" id="faq-accordion">
+                  
+                  <div class="accordion-item">
+                    <h4 class="accordion-header">
+                      <button id="faq-q1-btn" class="accordion-trigger" aria-expanded="false" aria-controls="faq-q1-panel">
+                        How do I log in to the new GlobalTech VPN?
+                        <svg class="accordion-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"></path></svg>
+                      </button>
+                    </h4>
+                    <div id="faq-q1-panel" class="accordion-panel" role="region" aria-labelledby="faq-q1-btn" hidden>
+                      <div class="accordion-body">
+                        <p>To connect to the new corporate VPN gateway:</p>
+                        <ol>
+                          <li>Open the <strong>GlobalTech Secure Connect</strong> app on your device.</li>
+                          <li>Select your nearest regional gateway (e.g. <code>US-East</code>, <code>EU-West</code>, or <code>AP-South</code>).</li>
+                          <li>Enter your Single Sign-On (SSO) email.</li>
+                          <li>Complete the Okta MFA validation challenge on your registered mobile device.</li>
+                        </ol>
+                        <p>If you experience any connection delays, check the status of the gateway on our <button class="text-link-btn inline-btn" data-target="support-tab">IT Service Status page</button>.</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="accordion-item">
+                    <h4 class="accordion-header">
+                      <button id="faq-q2-btn" class="accordion-trigger" aria-expanded="false" aria-controls="faq-q2-panel">
+                        When is the health benefits open enrollment period?
+                        <svg class="accordion-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"></path></svg>
+                      </button>
+                    </h4>
+                    <div id="faq-q2-panel" class="accordion-panel" role="region" aria-labelledby="faq-q2-btn" hidden>
+                      <div class="accordion-body">
+                        <p>Open enrollment for health, vision, and dental plans runs from <strong>November 1 to November 30</strong> annually. Any selections made during this period will take effect on January 1 of the following year.</p>
+                        <p>However, you can update your matching rates or review choices at any time on the <button class="text-link-btn inline-btn" data-target="hr-tab" data-sub="benefits">Benefits Enrollment portal</button>.</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="accordion-item">
+                    <h4 class="accordion-header">
+                      <button id="faq-q3-btn" class="accordion-trigger" aria-expanded="false" aria-controls="faq-q3-panel">
+                        Where do I access recorded webinars or course transcripts?
+                        <svg class="accordion-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"></path></svg>
+                      </button>
+                    </h4>
+                    <div id="faq-q3-panel" class="accordion-panel" role="region" aria-labelledby="faq-q3-btn" hidden>
+                      <div class="accordion-body">
+                        <p>All recorded training content, webinars, and slides are hosted on the <button class="text-link-btn inline-btn" data-target="learning-tab">Learning &amp; Development platform</button>.</p>
+                        <p>To view transcripts, select any active course in the course table. The interactive audio transcript will load immediately below the video player. You can download a flat text file of the transcript using the download button inside the transcript widget.</p>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+            
+            <div class="kb-sidebar">
+              <div class="sidebar-card">
+                <h3>Quick References</h3>
+                <ul class="quick-ref-list" role="list">
+                  <li><a href="#" class="ref-link">Global HR Guidelines (v2.6)</a></li>
+                  <li><a href="#" class="ref-link">MacBook Setup Manual</a></li>
+                  <li><a href="#" class="ref-link">Travel &amp; Expense Policies</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== MODULE: HELP CENTRE ==================== -->
+        <section id="help-tab" class="tab-panel" role="region" aria-label="Help Centre and Accessibility Guidelines">
+          <div class="section-title-area">
+            <h1>Help Centre</h1>
+            <p class="section-subtitle">Detailed guidance on utilizing this platform and its built-in accessibility features.</p>
+          </div>
+
+          <div class="help-content-card">
+            <h3>Accessibility Quick-Start Guide</h3>
+            <p>GlobalTech is committed to creating an inclusive workplace. This platform is designed to be fully navigable via keyboard and compatible with popular screen readers like JAWS, NVDA, and VoiceOver.</p>
+
+            <div class="feature-explainer-grid">
+              <div class="feature-explainer">
+                <h4>Contrast Options</h4>
+                <p>Toggle between Light, Dark, and High Contrast theme modes in the <strong>Accessibility Center</strong> (top right menu, or <kbd>Alt</kbd> + <kbd>A</kbd>). High Contrast mode meets WCAG AAA guidelines for color brightness and text readability.</p>
+              </div>
+
+              <div class="feature-explainer">
+                <h4>Dyslexia-Friendly Layout</h4>
+                <p>When activated, the layout alters baseline line-spacing, expands word spacing, and loads a dyslexia-adapted sans-serif typeface to assist reading accuracy.</p>
+              </div>
+
+              <div class="feature-explainer">
+                <h4>Reading Ruler Overlay</h4>
+                <p>Use the Reading Guide ruler to superimpose a transparent highlighting bar that tracks your cursor. This aids focus and simplifies reading line-by-line in long documents.</p>
+              </div>
+
+              <div class="feature-explainer">
+                <h4>Visual Audio Alerts</h4>
+                <p>If you have hearing impairments, toggling "Sound Visual Equivalents" will output visual toast flashes whenever system notification chimes are triggered.</p>
+              </div>
+            </div>
+
+            <div class="help-section-footer">
+              <p>For custom assistance, please contact the Accessibility Services team at <a href="mailto:inclusion@globaltech.com" class="support-email">inclusion@globaltech.com</a>.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== MODULE: PROFILE ==================== -->
+        <section id="profile-tab" class="tab-panel" role="region" aria-label="User Profile">
+          <div class="section-title-area">
+            <h1>User Profile</h1>
+            <p class="section-subtitle">Manage your personal employee profile information and system settings.</p>
+          </div>
+
+          <div class="profile-layout-container">
+            <div class="profile-card-main">
+              <div class="profile-cover-placeholder"></div>
+              <div class="profile-details-header">
+                <div class="avatar-initials avatar-lg avatar-hue-1" role="img" aria-label="Vishnu avatar">V</div>
+                <div class="profile-meta-info">
+                  <h2>Vishnu</h2>
+                  <p class="title">Business Analyst</p>
+                  <p class="meta">Location: London | Department: Business Operations | Employee ID: GT-904221</p>
+                </div>
+              </div>
+
+              <div class="profile-bio-sections">
+                <h3>Contact &amp; Work Details</h3>
+                <div class="bio-grid">
+                  <div class="bio-item">
+                    <span class="bio-label">Email</span>
+                    <span class="bio-val">vishnu@globaltech.com</span>
+                  </div>
+                  <div class="bio-item">
+                    <span class="bio-label">Phone</span>
+                    <span class="bio-val">+44 20 7946 0142</span>
+                  </div>
+                  <div class="bio-item">
+                    <span class="bio-label">Manager</span>
+                    <span class="bio-val">Sarah Jenkins (Head of Business Operations)</span>
+                  </div>
+                  <div class="bio-item">
+                    <span class="bio-label">Start Date</span>
+                    <span class="bio-val">March 14, 2021</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+
+    </div>
+
+  </div>
+
+  <!-- Toast notification stack -->
+  <div id="toast-stack" class="toast-stack" aria-live="polite" aria-label="Notifications"></div>
+
+  <!-- Screen Reader Visual Output Console -->
+  <div id="screen-reader-console" class="screen-reader-console hidden" role="status" aria-live="polite">
+    <strong>ARIA Console Output:</strong> <span id="sr-console-text">Press Tab or hover elements to simulate screen reader announcements.</span>
+  </div>
+
+  <!-- Visual Braille tactile simulated output console -->
+  <div id="braille-console" class="braille-console hidden" role="status" aria-live="polite">
+    <strong>Tactile Braille output:</strong> <span id="braille-console-text">⠓⠑⠇⠇⠕</span>
+  </div>
+
+  <!-- Colorblindness Emulation SVG filters -->
+  <svg class="sr-only" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <filter id="protanopia-filter"><feColorMatrix type="matrix" values="0.567, 0.433, 0, 0, 0, 0.558, 0.442, 0, 0, 0, 0, 0.242, 0.758, 0, 0, 0, 0, 0, 1, 0"/></filter>
+      <filter id="deuteranopia-filter"><feColorMatrix type="matrix" values="0.625, 0.375, 0, 0, 0, 0.7, 0.3, 0, 0, 0, 0, 0.3, 0.7, 0, 0, 0, 0, 0, 1, 0"/></filter>
+      <filter id="tritanopia-filter"><feColorMatrix type="matrix" values="0.95, 0.05, 0, 0, 0, 0, 0.433, 0.567, 0, 0, 0, 0.475, 0.525, 0, 0, 0, 0, 0, 1, 0"/></filter>
+      <filter id="grayscale-filter"><feColorMatrix type="matrix" values="0.299, 0.587, 0.114, 0, 0, 0.299, 0.587, 0.114, 0, 0, 0.299, 0.587, 0.114, 0, 0, 0, 0, 0, 1, 0"/></filter>
+    </defs>
+  </svg>
+
+  <script src="app.js?v=2.1"></script>
+</body>
+</html>
