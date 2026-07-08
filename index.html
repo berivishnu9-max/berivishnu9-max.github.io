@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GlobalTech Connect — Employee Portal</title>
   <meta name="description" content="GlobalTech's accessible employee portal. Designed and audited against WCAG 2.2 AA success criteria.">
-  <link rel="stylesheet" href="styles.css?v=2.1">
+  <link rel="stylesheet" href="styles.css?v=2.3">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&family=Lexend:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -386,7 +386,7 @@
               </label>
             </div>
             <div class="speech-hints-box" id="speech-hints-box" style="display: none; padding: 10px; border-left: 2px solid var(--border-color); font-size: 0.8rem; background: var(--bg-tertiary); border-radius: var(--border-radius-sm);">
-              <strong>Voice commands list:</strong> "dashboard", "hr portal", "learning", "support", "news", "directory", "knowledge base", "help centre", "profile".
+              <strong>Voice commands list<span id="speech-hints-lang-tag"></span>:</strong> <span id="speech-hints-list">"dashboard", "hr portal", "learning", "support", "news", "directory", "knowledge base", "help centre", "profile".</span>
             </div>
 
             <!-- Focus Guide Outline settings -->
@@ -1502,6 +1502,6 @@
     </defs>
   </svg>
 
-  <script src="app.js?v=2.1"></script>
+  <script src="app.js?v=2.3"></script>
 </body>
 </html>

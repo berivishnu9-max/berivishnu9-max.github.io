@@ -315,7 +315,7 @@ const localizations = {
     '#accessibility-toolbar-btn .btn-text': 'アクセシビリティハブ',
     '#notification-btn .btn-text': '通知',
     '.profile-role': 'ビジネスアナリスト',
-    '.welcome-banner h1': 'おかえりなさい、マーカス',
+    '.welcome-banner h1': 'おかえりなさい、Vishnu',
     '.welcome-banner p': '未完了の研修が3件、進行中のサポートチケットが1件あります。',
     '.welcome-banner .primary-btn-overlay': '研修を再開する',
     '.welcome-banner .secondary-btn-overlay': 'チケット状況を確認',
@@ -377,7 +377,7 @@ const localizations = {
     '#accessibility-toolbar-btn .btn-text': 'सुलभता केंद्र',
     '#notification-btn .btn-text': 'अलर्ट',
     '.profile-role': 'बिज़नेस एनालिस्ट',
-    '.welcome-banner h1': 'स्वागत है, मार्कस',
+    '.welcome-banner h1': 'स्वागत है, Vishnu',
     '.welcome-banner p': 'आपके पास 3 लंबित प्रशिक्षण पाठ्यक्रम और 1 सक्रिय टिकट है।',
     '.welcome-banner .primary-btn-overlay': 'प्रशिक्षण फिर से शुरू करें',
     '.welcome-banner .secondary-btn-overlay': 'टिकट स्थिति',
@@ -525,6 +525,7 @@ function applyAccessibilitySettings() {
   if (speechToggle) speechToggle.checked = appState.speechActive;
   const hintsBox = document.getElementById('speech-hints-box');
   if (hintsBox) hintsBox.style.display = appState.speechActive ? 'block' : 'none';
+  updateSpeechHintsBox();
   if (appState.speechActive) {
     startVoiceCommandEngine();
   } else {
@@ -625,18 +626,42 @@ function loadVoices() {
     if (voice.name === appState.ttsVoice) option.selected = true;
     ttsVoiceSelect.appendChild(option);
   });
+
+  // Voices load asynchronously, so the hint text (and any live recognizer)
+  // are refreshed once the real voice list — and its languages — are known
+  updateSpeechHintsBox();
+  if (appState.speechActive && speechRecognitionEngine) {
+    stopVoiceCommandEngine();
+    startVoiceCommandEngine();
+  }
 }
+
+let ttsSpeakTimer = null;
 
 function announceTextReader(text, urgent = false) {
   if (!appState.ttsActive || !('speechSynthesis' in window)) return;
-  window.speechSynthesis.cancel(); // Stop current speech announcements immediately
-  
-  const utterance = new SpeechSynthesisUtterance(text);
-  const voices = window.speechSynthesis.getVoices();
-  const selectedVoice = voices.find(v => v.name === appState.ttsVoice);
-  if (selectedVoice) utterance.voice = selectedVoice;
-  utterance.rate = appState.ttsSpeed;
-  window.speechSynthesis.speak(utterance);
+  const synth = window.speechSynthesis;
+
+  clearTimeout(ttsSpeakTimer);
+  synth.cancel(); // Stop any announcement currently in progress
+
+  // Chromium has a long-standing bug where speak() queued in the same tick
+  // as cancel() is silently dropped — a short delay lets the cancel finish
+  // before the next utterance is queued, otherwise the reader can go
+  // completely silent whenever focus/hover events fire in quick succession
+  ttsSpeakTimer = setTimeout(() => {
+    const utterance = new SpeechSynthesisUtterance(text);
+    const voices = synth.getVoices();
+    const selectedVoice = voices.find(v => v.name === appState.ttsVoice);
+    if (selectedVoice) {
+      utterance.voice = selectedVoice;
+      utterance.lang = selectedVoice.lang;
+    }
+    utterance.rate = appState.ttsSpeed;
+
+    if (synth.paused) synth.resume();
+    synth.speak(utterance);
+  }, 60);
 }
 
 // ARIA Log updates
@@ -767,18 +792,76 @@ function translateToBraille(text) {
 }
 
 // 5. Motor Speech Recognition command routing
+// Command keywords per language so voice control works no matter which TTS
+// voice profile (and therefore language/accent) the user has selected —
+// the recognizer's listening language and the matched keywords both follow
+// the currently selected voice, instead of being hardcoded to English.
+const VOICE_TAB_ORDER = ['dashboard-tab', 'hr-tab', 'learning-tab', 'support-tab', 'news-tab', 'directory-tab', 'kb-tab', 'help-tab', 'profile-tab'];
+
+const VOICE_COMMAND_KEYWORDS = {
+  en: { 'dashboard-tab': ['dashboard', 'home'], 'hr-tab': ['hr', 'leave', 'benefits'], 'learning-tab': ['learning', 'training', 'course'], 'support-tab': ['support', 'ticket'], 'news-tab': ['news', 'announcement'], 'directory-tab': ['directory', 'employee'], 'kb-tab': ['knowledge', 'faq', 'kb'], 'help-tab': ['help'], 'profile-tab': ['profile', 'me'] },
+  es: { 'dashboard-tab': ['panel', 'inicio'], 'hr-tab': ['rrhh', 'recursos humanos', 'licencia', 'beneficios'], 'learning-tab': ['capacitación', 'formación', 'curso'], 'support-tab': ['soporte', 'ticket'], 'news-tab': ['noticias', 'anuncio'], 'directory-tab': ['directorio', 'empleado'], 'kb-tab': ['conocimiento', 'preguntas frecuentes'], 'help-tab': ['ayuda'], 'profile-tab': ['perfil'] },
+  fr: { 'dashboard-tab': ['tableau de bord', 'accueil'], 'hr-tab': ['rh', 'ressources humaines', 'congé', 'avantages'], 'learning-tab': ['formation', 'cours'], 'support-tab': ['support', 'ticket'], 'news-tab': ['actualités', 'annonce'], 'directory-tab': ['annuaire', 'employé'], 'kb-tab': ['connaissances', 'faq'], 'help-tab': ['aide'], 'profile-tab': ['profil'] },
+  de: { 'dashboard-tab': ['dashboard', 'start'], 'hr-tab': ['hr', 'personalabteilung', 'urlaub', 'leistungen'], 'learning-tab': ['schulung', 'weiterbildung', 'kurs'], 'support-tab': ['support', 'ticket'], 'news-tab': ['nachrichten', 'ankündigung'], 'directory-tab': ['verzeichnis', 'mitarbeiter'], 'kb-tab': ['wissensdatenbank', 'faq'], 'help-tab': ['hilfe'], 'profile-tab': ['profil'] },
+  it: { 'dashboard-tab': ['dashboard', 'home'], 'hr-tab': ['risorse umane', 'congedo', 'agevolazioni'], 'learning-tab': ['formazione', 'corso'], 'support-tab': ['supporto', 'ticket'], 'news-tab': ['notizie', 'annuncio'], 'directory-tab': ['elenco', 'dipendente'], 'kb-tab': ['conoscenza', 'domande frequenti'], 'help-tab': ['aiuto'], 'profile-tab': ['profilo'] },
+  pt: { 'dashboard-tab': ['painel', 'início'], 'hr-tab': ['rh', 'recursos humanos', 'licença', 'benefícios'], 'learning-tab': ['treinamento', 'curso'], 'support-tab': ['suporte', 'chamado'], 'news-tab': ['notícias', 'anúncio'], 'directory-tab': ['diretório', 'funcionário'], 'kb-tab': ['conhecimento', 'perguntas frequentes'], 'help-tab': ['ajuda'], 'profile-tab': ['perfil'] },
+  ja: { 'dashboard-tab': ['ダッシュボード'], 'hr-tab': ['人事', '休暇', '福利厚生'], 'learning-tab': ['研修', 'トレーニング'], 'support-tab': ['サポート', 'チケット'], 'news-tab': ['ニュース', 'お知らせ'], 'directory-tab': ['名簿', '社員'], 'kb-tab': ['ナレッジ', 'よくある質問'], 'help-tab': ['ヘルプ'], 'profile-tab': ['プロフィール'] },
+  zh: { 'dashboard-tab': ['仪表板', '主页'], 'hr-tab': ['人事', '请假', '福利'], 'learning-tab': ['培训', '课程'], 'support-tab': ['支持', '工单'], 'news-tab': ['新闻', '公告'], 'directory-tab': ['名册', '员工'], 'kb-tab': ['知识库', '常见问题'], 'help-tab': ['帮助'], 'profile-tab': ['个人资料'] },
+  hi: { 'dashboard-tab': ['डैशबोर्ड', 'होम'], 'hr-tab': ['एचआर', 'छुट्टी', 'लाभ'], 'learning-tab': ['प्रशिक्षण', 'सीखना'], 'support-tab': ['सहायता', 'टिकट'], 'news-tab': ['समाचार', 'सूचना'], 'directory-tab': ['निर्देशिका', 'कर्मचारी'], 'kb-tab': ['ज्ञान', 'सवाल'], 'help-tab': ['मदद'], 'profile-tab': ['प्रोफ़ाइल'] }
+};
+
+// Resolves the BCP-47 recognition tag and command-keyword language from
+// whichever voice is currently selected in the TTS "System Voice Profile"
+// dropdown, so both speech input and speech output agree on a language.
+function getActiveRecognitionLang() {
+  const voices = ('speechSynthesis' in window) ? window.speechSynthesis.getVoices() : [];
+  const selectedVoice = voices.find(v => v.name === appState.ttsVoice);
+  const bcp47 = (selectedVoice && selectedVoice.lang) || navigator.language || 'en-US';
+  const short = bcp47.slice(0, 2).toLowerCase();
+  return { bcp47, short: VOICE_COMMAND_KEYWORDS[short] ? short : 'en' };
+}
+
+// Regenerates the "Voice commands list" hint text to show real examples in
+// whichever language is currently active, so the hint never goes stale
+function updateSpeechHintsBox() {
+  const listEl = document.getElementById('speech-hints-list');
+  const tagEl = document.getElementById('speech-hints-lang-tag');
+  if (!listEl) return;
+
+  const { short } = getActiveRecognitionLang();
+  const keywords = VOICE_COMMAND_KEYWORDS[short];
+  listEl.textContent = VOICE_TAB_ORDER.map(tab => `"${keywords[tab][0]}"`).join(', ') + '.';
+  if (tagEl) tagEl.textContent = short === 'en' ? '' : ` (${short.toUpperCase()})`;
+}
+
 let speechRecognitionEngine = null;
+function disableSpeechToggle() {
+  saveSetting('speechActive', false);
+  const speechToggle = document.getElementById('speech-command-toggle');
+  if (speechToggle) speechToggle.checked = false;
+  const hints = document.getElementById('speech-hints-box');
+  if (hints) hints.style.display = 'none';
+}
+
 function startVoiceCommandEngine() {
   if (speechRecognitionEngine) return;
   const RecognitionClass = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!RecognitionClass) {
-    // If Web Speech API not supported by browser, toggle state off and return
-    saveSetting('speechActive', false);
-    const speechToggle = document.getElementById('speech-command-toggle');
-    if (speechToggle) speechToggle.checked = false;
-    const hints = document.getElementById('speech-hints-box');
-    if (hints) hints.style.display = 'none';
+    // If Web Speech API not supported by browser, toggle state off and
+    // say why — failing silently here is exactly what made this look
+    // "broken" with no way for the user to tell what went wrong
+    disableSpeechToggle();
+    showToast('Voice commands need Chrome, Edge, or Safari 17+ — this browser doesn\'t support speech recognition.', 'error', 7000);
     console.warn('Web Speech Recognition API not supported by this browser.');
+    return;
+  }
+
+  // Speech recognition requires a secure context (HTTPS or localhost); on
+  // plain HTTP or a file:// page the browser silently refuses microphone
+  // access, so this is surfaced instead of leaving the toggle stuck "on"
+  if (!window.isSecureContext) {
+    disableSpeechToggle();
+    showToast('Voice commands require a secure (HTTPS) connection. This page is not being served securely.', 'error', 7000);
     return;
   }
 
@@ -786,12 +869,13 @@ function startVoiceCommandEngine() {
     speechRecognitionEngine = new RecognitionClass();
     speechRecognitionEngine.continuous = true;
     speechRecognitionEngine.interimResults = false;
-    speechRecognitionEngine.lang = 'en-US';
+    speechRecognitionEngine.lang = getActiveRecognitionLang().bcp47;
 
     const indicator = document.getElementById('voice-indicator');
 
     speechRecognitionEngine.onstart = () => {
       if (indicator) indicator.classList.remove('hidden');
+      announceTextReader('Voice control microphone is now listening.');
     };
 
     speechRecognitionEngine.onresult = (e) => {
@@ -801,12 +885,22 @@ function startVoiceCommandEngine() {
 
     speechRecognitionEngine.onerror = (event) => {
       console.warn('Speech recognition error event:', event.error);
-      if (event.error === 'not-allowed') {
-        // Halt speech engine if browser blocks microphone access permissions
-        saveSetting('speechActive', false);
-        const speechToggle = document.getElementById('speech-command-toggle');
-        if (speechToggle) speechToggle.checked = false;
-        applyAccessibilitySettings();
+
+      // "no-speech" (silence) and "aborted" (tab switch, manual stop) are
+      // routine in continuous listening mode, not real failures
+      if (event.error === 'no-speech' || event.error === 'aborted') return;
+
+      const messages = {
+        'not-allowed': 'Microphone access was blocked. Allow the microphone for this site in your browser settings, then turn voice control back on.',
+        'service-not-allowed': 'Microphone access was blocked. Allow the microphone for this site in your browser settings, then turn voice control back on.',
+        'audio-capture': 'No microphone was found. Connect a microphone and try again.',
+        'network': 'Voice recognition needs an internet connection — the speech service could not be reached.'
+      };
+
+      if (messages[event.error]) {
+        showToast(messages[event.error], 'error', 7000);
+        disableSpeechToggle();
+        stopVoiceCommandEngine();
       }
     };
 
@@ -826,6 +920,8 @@ function startVoiceCommandEngine() {
     speechRecognitionEngine.start();
   } catch (err) {
     console.warn('Microphone synthesis initialization failed:', err);
+    disableSpeechToggle();
+    showToast('Voice control could not start. Please reload the page and try again.', 'error', 6000);
   }
 }
 
@@ -906,25 +1002,14 @@ function routeSpeechCommand(phrase) {
     setTimeout(() => voiceAlert.classList.add('hidden'), 3000);
   }
 
-  // Routing checks
-  if (phrase.includes('dashboard') || phrase.includes('home')) {
-    switchTab('dashboard-tab');
-  } else if (phrase.includes('hr') || phrase.includes('leave') || phrase.includes('benefits')) {
-    switchTab('hr-tab');
-  } else if (phrase.includes('learning') || phrase.includes('training') || phrase.includes('course')) {
-    switchTab('learning-tab');
-  } else if (phrase.includes('support') || phrase.includes('ticket')) {
-    switchTab('support-tab');
-  } else if (phrase.includes('news') || phrase.includes('announcement')) {
-    switchTab('news-tab');
-  } else if (phrase.includes('directory') || phrase.includes('employee')) {
-    switchTab('directory-tab');
-  } else if (phrase.includes('knowledge') || phrase.includes('faq') || phrase.includes('kb')) {
-    switchTab('kb-tab');
-  } else if (phrase.includes('help')) {
-    switchTab('help-tab');
-  } else if (phrase.includes('profile') || phrase.includes('me')) {
-    switchTab('profile-tab');
+  // Match against whichever language the active voice profile implies —
+  // falls back to the English keyword set for any unmapped language, so a
+  // recognized phrase always has a chance to route somewhere
+  const { short } = getActiveRecognitionLang();
+  const keywords = VOICE_COMMAND_KEYWORDS[short];
+  const matchedTab = VOICE_TAB_ORDER.find(tab => keywords[tab].some(kw => phrase.includes(kw)));
+  if (matchedTab) {
+    switchTab(matchedTab);
   }
 }
 
@@ -2352,6 +2437,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (ttsVoiceSelect) {
       ttsVoiceSelect.addEventListener('change', () => {
         saveSetting('ttsVoice', ttsVoiceSelect.value);
+        updateSpeechHintsBox();
+        // Restart voice control so it starts listening in the newly
+        // selected profile's language rather than the previous one
+        if (appState.speechActive && speechRecognitionEngine) {
+          stopVoiceCommandEngine();
+          startVoiceCommandEngine();
+        }
         announceTextReader(`Vocal text-to-speech voice profile shifted to ${ttsVoiceSelect.value}`);
       });
     }
